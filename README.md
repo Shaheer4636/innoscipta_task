@@ -5,8 +5,7 @@
 3. [Modifying Dockerfile for Kubernetes](#modifying-dockerfile-for-kubernetes)
 4. [Implementing CI/CD with Jenkins](#implementing-cicd-with-jenkins)
 5. [Adding IAM User for AWS Access](#adding-iam-user-for-aws-access)
-6. [Documentation](#documentation)
-7. [Final Steps](#final-steps)
+
 
 ---
 
