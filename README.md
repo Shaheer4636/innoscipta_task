@@ -1,48 +1,47 @@
-# Laravel 10 Boilerplate
+# Table of Contents
 
-The goal of this project is to serve as a boilerplate for Laravel 10
-utilizing light-weight alpine linux images for nginx and php 8.2 (fpm).
+1. [AWS EKS Cluster Setup with Terraform](#aws-eks-cluster-setup-with-terraform)
+2. [Creating Helm Chart](#creating-helm-chart)
+3. [Modifying Dockerfile for Kubernetes](#modifying-dockerfile-for-kubernetes)
+4. [Implementing CI/CD with Jenkins](#implementing-cicd-with-jenkins)
+5. [Adding IAM User for AWS Access](#adding-iam-user-for-aws-access)
+6. [Documentation](#documentation)
+7. [Final Steps](#final-steps)
 
-Stack:
+---
 
-- app @ php:8.2-fpm-alpine
-- nginx @ nginx:alpine
-- mysql @ mysql
-- redis @ redis:alpine
-- worker-local @ php:8.2-alpine3.16
+## 1. AWS EKS Cluster Setup with Terraform
 
-## TODO
+- We used Terraform to provision a basic AWS EKS cluster named innoscripta-task.
+- The Terraform configuration is provided in the repository's `main.tf` file.
+- We configured the cluster to have a desired size of 2 nodes, with a minimum of 1 node and a maximum of 5 nodes.
+  
+  ![AWS EKS Cluster Setup](https://github.com/Shaheer4636/innoscipta_task/blob/main/1%20(2).jpeg)
 
-- add a basic, highly optional seeder for user
-- hook up worker-local so you have a queue to play with
-- create an example job/worker you might co-locate on same hardware
-- maybe add some ci/cd and even k8s stuff as an example to scale out workers/nginx/edges
+## 2. Creating Helm Chart
 
-## Notes
+- We created a Helm chart to deploy the Laravel application.
+- The Helm chart includes a `Deployment.yaml` file specifying the deployment of the application with three replicas.
+- The Helm chart enables easy deployment and management of the application on Kubernetes.
+  
+  ![Creating Helm Chart](https://github.com/Shaheer4636/innoscipta_task/blob/main/2.jpeg)
 
-- docker/app docker/nginx will rely on supervisor to maintain their processes, yawn
-- Please see .env "#PORT FORWARDS" before starting in docker-compose
--
+## 3. Modifying Dockerfile for Kubernetes
 
-## Installation
+- The existing Dockerfile in the repository was modified to ensure compatibility with Kubernetes deployment.
+- The Dockerfile was updated to copy application files into the image and expose the necessary ports.
 
-The default docker-compose config here exposes ports if you want them.  See .env's "PORT FORWARDS"
+## 4. Implementing CI/CD with Jenkins
 
-```shell
-cp ./env.example ./.env
-docker-compose up --build -d app nginx mysql
+- We set up CI/CD pipelines using Jenkins.
+- The Jenkins pipeline script defines three stages: Test, Build, and Deploy.
+- The Test stage runs PHPUnit tests on the application code.
+- The Build stage builds the Docker image for the application and pushes it to AWS ECR.
+- The Deploy stage deploys the application to the AWS EKS cluster using Helm.
+  
+  ![Implementing CI/CD with Jenkins](https://github.com/Shaheer4636/innoscipta_task/blob/main/3.jpeg)
 
-#docker-compose exec app php artisan migrate
-```
+## 5. Adding IAM User for AWS Access
 
-You can now access http://localhost:8022 (or whatever your FORWARD_NGINX_PORT is).
-
-Please keep ./composer.lock in docker/app container context, for example:
-
-```shell
-docker-compose exec -u root app /bin/sh
-# then...
-# COMPOSER_MEMORY_LIMIT=-1 app composer install
-# COMPOSER_MEMORY_LIMIT=-1 app composer require awesome/package_etc
-# ymmv w/ COMPOSER_MEMORY_LIMIT maybe try without
-```
+- We created an IAM user in AWS with limited access permissions to EKS and ECR. 
+- Access Key and Secret Key were generated for the IAM user and securely stored.
